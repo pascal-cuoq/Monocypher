@@ -852,8 +852,8 @@ int p_from_ed25519()
 
 int main(int argc, char *argv[])
 {
-    char suite = 'v';
-    if (argc > 1) suite= argv[1][0];
+    char *suite = "verify";
+    if (argc > 1) suite= argv[1];
 
     if (argc > 2) {
         sscanf(argv[2], "%" PRIu64 "", &random_state);
@@ -863,36 +863,42 @@ int main(int argc, char *argv[])
     int status = 0;
     printf("\nProperty based tests");
     printf("\n--------------------\n");
-    if (suite == 'v') {
+    if (!strcmp(suite, "verify")) {
     status |= p_verify16();
     status |= p_verify32();
     status |= p_verify64();
     }
-    else if (suite == 'c') {
+    else if (!strcmp(suite, "chacha20_ctr")) {
     status |= p_chacha20_ctr();
+    }
+    else if (!strcmp(suite, "chacha20_stream")) {
     status |= p_chacha20_stream();
+    }
+    else if (!strcmp(suite, "chacha20_same")) {
     status |= p_chacha20_same_ptr();
+    }
+    else if (!strcmp(suite, "hchacha20")) {
     status |= p_hchacha20();
     }
-    else if (suite == 'p') {
+    else if (!strcmp(suite, "poly1305")) {
     status |= p_poly1305();
     status |= p_poly1305_overlap();
     }
-    else if (suite == 'b') {
+    else if (!strcmp(suite, "blake2")) {
     status |= p_blake2b();
     status |= p_blake2b_overlap();
     }
-    else if (suite == 's') {
+    else if (!strcmp(suite, "sha512")) {
     status |= p_sha512();
     status |= p_sha512_overlap();
     status |= p_hmac_sha512();
     status |= p_hmac_sha512_overlap();
     }
-    else if (suite == 'a') {
+    else if (!strcmp(suite, "argon")) {
     status |= p_argon2i_easy();
     status |= p_argon2i_overlap();
     }
-    else if (suite == 'e') {
+    else if (!strcmp(suite, "ecc")) {
     status |= p_x25519_overlap();
     status |= p_key_exchange_overlap();
     status |= p_eddsa_roundtrip();
