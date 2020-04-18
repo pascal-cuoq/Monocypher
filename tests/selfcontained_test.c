@@ -852,31 +852,47 @@ int p_from_ed25519()
 
 int main(int argc, char *argv[])
 {
-    if (argc > 1) {
-        sscanf(argv[1], "%" PRIu64 "", &random_state);
+    char suite = 'v';
+    if (argc > 1) suite= argv[1][0];
+
+    if (argc > 2) {
+        sscanf(argv[2], "%" PRIu64 "", &random_state);
     }
     printf("\nRandom seed: %" PRIu64 "\n", random_state);
 
     int status = 0;
     printf("\nProperty based tests");
     printf("\n--------------------\n");
+    if (suite == 'v') {
     status |= p_verify16();
     status |= p_verify32();
     status |= p_verify64();
+    }
+    else if (suite == 'c') {
     status |= p_chacha20_ctr();
     status |= p_chacha20_stream();
     status |= p_chacha20_same_ptr();
     status |= p_hchacha20();
+    }
+    else if (suite == 'p') {
     status |= p_poly1305();
     status |= p_poly1305_overlap();
+    }
+    else if (suite == 'b') {
     status |= p_blake2b();
     status |= p_blake2b_overlap();
+    }
+    else if (suite == 's') {
     status |= p_sha512();
     status |= p_sha512_overlap();
     status |= p_hmac_sha512();
     status |= p_hmac_sha512_overlap();
+    }
+    else if (suite == 'a') {
     status |= p_argon2i_easy();
     status |= p_argon2i_overlap();
+    }
+    else if (suite == 'e') {
     status |= p_x25519_overlap();
     status |= p_key_exchange_overlap();
     status |= p_eddsa_roundtrip();
@@ -894,6 +910,7 @@ int main(int argc, char *argv[])
     status |= p_x25519_inverse_overlap();
     status |= p_from_eddsa();
     status |= p_from_ed25519();
+    }
     printf("\n%s\n\n", status != 0 ? "SOME TESTS FAILED" : "All tests OK!");
     return status;
 }
